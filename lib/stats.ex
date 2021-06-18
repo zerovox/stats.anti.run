@@ -115,7 +115,7 @@ defmodule Stats do
 
   defmodule ScoredGame do
     @derive {Poison.Encoder, []}
-    defstruct [:scores, :completed_time_iso]
+    defstruct [:scores, :completed_time]
 
     def from_game(%Game{hands: hands, players: players, completed_time: completed_time}) do
       player_ids = Enum.map(players, & &1.user_id)
@@ -131,8 +131,7 @@ defmodule Stats do
           |> (&Enum.reduce(Stream.zip(&1, player_ids), %{}, fn {score, id}, acc ->
                 Map.put(acc, id, score)
               end)).(),
-        completed_time_iso:
-          DateTime.from_unix!(completed_time * 1_000, :microsecond) |> DateTime.to_iso8601()
+        completed_time: DateTime.from_unix!(completed_time * 1_000, :microsecond)
       }
     end
   end
