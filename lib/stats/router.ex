@@ -38,9 +38,8 @@ defmodule Stats.Router do
 
     players
     |> Enum.map(&get_player_score_series(&1, scored_games))
-    |> Enum.map(fn series ->
-      Enum.map(series, fn {time, score} -> %{time: time, score: score} end)
-    end)
+    # Poison can't handle tuples, so we explicitly convert to a map.
+    |> Enum.map(&Enum.map(&1, fn {time, score} -> %{time: time, score: score} end))
   end
 
   defp get_players(parsed_games) do
